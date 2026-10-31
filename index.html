@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TripCircle Demo - Interactive Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="assets/rive.js"></script>
+<style>
+:root{--keppel:#3AB7A5;--ink:#0E6B5E;--black:#1C1C1C;--bg:#F6F8F7;--card:#fff;--text:#1C1C1C;--muted:#5A6B68;--tint:#E6F5F2;--line:#D8E3E0;--warn-bg:#FFF4E0;--warn-line:#E8C87A;--green:#1E7A4C;--amber:#8A5A00}
+[data-theme="dark"]{--bg:#121918;--card:#1E2B29;--text:#F2F7F5;--muted:#B8C9C5;--tint:#143F38;--line:#33514C;--warn-bg:#3A2F14;--warn-line:#8A6D2B}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"DM Sans",system-ui,sans-serif;line-height:1.5}
+h1,h2,h3{font-family:"Sora",sans-serif;line-height:1.25;margin:0 0 10px}
+p{margin:0 0 10px}
+button{font-family:inherit;font-size:16px;min-height:44px;padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer}
+button.primary{background:var(--ink);border-color:var(--ink);color:#fff}
+button.teal{background:var(--keppel);border-color:var(--keppel);color:#10201D;font-weight:700}
+button:disabled{opacity:.5;cursor:not-allowed}
+input,select,textarea{min-height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:10px 12px;font-size:16px;width:100%}
+.top{max-width:980px;margin:0 auto;padding:18px 16px 0}
+.banner{background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:12px 16px;margin-bottom:14px}
+.recbar{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;margin-bottom:16px}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.pill{display:inline-block;background:var(--tint);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700;margin:2px 4px 2px 0}
+.pill.ok{border-color:var(--ink);color:var(--green)}
+.pill.warn{background:var(--warn-bg);border-color:var(--warn-line);color:var(--amber)}
+.pill.pending{background:var(--warn-bg);border-color:var(--warn-line);color:var(--amber)}
+.muted{color:var(--muted)}
+.accent{color:var(--ink);font-style:italic}
+[data-theme="dark"] .accent{color:var(--keppel)}
+.screen{display:none}
+.screen.active{display:block}
+.navgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px;margin:12px 0}
+.navgrid button{text-align:left;border-radius:14px}
+.navgrid button.now{background:var(--tint);border-color:var(--ink);font-weight:700}
+.chat{border:1px solid var(--line);border-radius:20px;padding:16px;background:var(--card);min-height:220px}
+.msg{margin:10px 0;padding:12px 14px;border-radius:16px;max-width:88%}
+.msg.genie{background:var(--tint);border:1px solid var(--line)}
+.msg.user{background:var(--ink);color:#fff;margin-left:auto}
+.rivebox{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start}
+canvas#riveCanvas{width:240px;height:360px;background:var(--tint);border:1px solid var(--line);border-radius:20px}
+img.genimg{width:240px;height:auto;border:1px solid var(--line);border-radius:20px;background:var(--tint)}
+img.frameimg{width:100%;height:auto;border:1px solid var(--line);border-radius:20px;display:block}
+.opt{border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px}
+.opt.voted{border-color:var(--ink);background:var(--tint)}
+.hidden{display:none !important}
+label.switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:700}
+input[type="checkbox"]{width:22px;height:22px;accent-color:var(--ink);min-height:22px}
+.detail{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:8px;background:var(--bg)}
+.footer{font-size:14px}
+</style>
+</head>
+<body>
+<header class="top">
+<div class="banner"><strong>MVP demo only. Sample data only, not a live app.</strong> No live booking, no live visa check, no money moves through TripCircle. Expense tracking and splits only.</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
+<div><h1>TripCircle</h1><p class="muted" style="margin:0">Interactive demo prototype, click it, do not just watch it</p></div>
+<button id="themeBtn" type="button">Switch to dark theme</button>
+</div>
+<div class="recbar" style="margin-top:14px">
+<div><strong id="stepLabel">Step 1 of 15: Wrong airport hook</strong><br><span class="muted" id="stepHint">Read the hook, then tap Next.</span></div>
+<div style="display:flex;gap:8px"><button id="backBtn" type="button">Back</button><button id="nextBtn" type="button" class="primary">Next step</button></div>
+</div>
+<nav class="navgrid" id="jumpNav" aria-label="Recording steps"></nav>
+</header>
+<main class="wrap">
+<!-- 1 HOOK -->
+<section class="screen" id="s1">
+<h2>Group trips are <em class="accent">fun</em>, until the airport is wrong</h2>
+<div class="card"><p style="font-size:20px">Group trips are fun until someone ends up at the wrong airport. Two cities, almost the same name, and now somebody is driving two and a half hours to pick up the straggler.</p>
+<p>That is one way a trip falls apart. The plan lived in a WhatsApp group chat, an iMessage side chat, two Google Sheets, one for money and one for activities, and an Apple Note that moved to Google Docs because not everyone has an iPhone. Six places. One trip.</p>
+<p><strong>Enough about what goes wrong. Here is how TripCircle makes it go right for you and your crew.</strong></p>
+<button type="button" class="primary" onclick="go(2)">See how it goes right</button></div>
+</section>
+
+<!-- 2 MOODBOARD -->
+<section class="screen" id="s2">
+<h2>Start with one <em class="accent">trip idea</em>, not a long form</h2>
+<div class="card">
+<label for="ideaInput">Your trip idea</label>
+<input id="ideaInput" type="text" value="Lisbon in June, beach days and one big group dinner" aria-label="Trip idea">
+<p class="muted" style="margin-top:10px">Type your own idea, the share card below updates as you type.</p>
+<div style="background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:16px">
+<h3 id="ideaOut">Lisbon in June, beach days and one big group dinner</h3>
+<p class="muted">One link, one trip, on any phone. Sample data only.</p>
+<button type="button" class="primary" id="shareBtn">Copy share link</button> <span id="shareMsg" class="muted"></span>
+</div>
+<h3 style="margin-top:18px">Who joined, live</h3>
+<div id="joinedList"><p class="muted">No one joined yet in this demo run. Tap below.</p></div>
+<button type="button" id="joinBtn">Send one link, watch the group join</button>
+</div>
+</section>
+
+<!-- 3 JOURNEYGENIE CHAT + RIVE -->
+<section class="screen" id="s3">
+<h2>JourneyGenie <em class="accent">plans with you</em></h2>
+<div class="rivebox">
+<div>
+<canvas id="riveCanvas" width="480" height="720"></canvas>
+<p class="muted" id="riveStatus">Loading JourneyGenie, FullForm Idle. If Rive cannot load from a file path, the static image below appears instead.</p>
+<img id="riveFallback" class="genimg hidden" src="assets/JG_fresh_fullform.png" alt="JourneyGenie, full form, static image">
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+<button type="button" id="celebrateBtn">Make JourneyGenie celebrate</button>
+<button type="button" id="mealBtn">Switch to LampWorld Meal</button>
+<button type="button" id="fullformBtn">Back to FullForm</button>
+</div>
+<p class="muted">One JourneyGenie at a time, one lamp only, the lamp in the Rive artboard. No second lamp on this screen.</p>
+</div>
+<div style="flex:1;min-width:280px">
+<div class="chat" id="chatBox"><div class="msg genie" id="chatFirst">Hi, I am JourneyGenie. Tell me the trip, and I will check the plan before anyone sees it as true.</div></div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
+<button type="button" class="chatAsk" data-ask="dates">Ask about dates</button>
+<button type="button" class="chatAsk" data-ask="budget">Ask about budgets</button>
+<button type="button" class="chatAsk" data-ask="prefs">Ask about preferences</button>
+</div>
+<input id="chatInput" type="text" placeholder="Type a reply, for example: June 12 to 19, about 800 each" style="margin-top:10px" aria-label="Reply to JourneyGenie">
+<button type="button" class="primary" id="chatSend" style="margin-top:10px">Send reply</button>
+<p class="muted" id="chatNote">JourneyGenie types slowly, on purpose, like a person typing. Its replies appear letter by letter.</p>
+<div class="card" style="margin-top:12px"><strong>Fun moments, static only for three states</strong><p class="muted">Popcorn, Social, and Clean are shown below as original whole images only. Their Rive runtime shots are not used here, because those runtime captures showed a black bar in Chromium.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<img class="genimg" style="width:150px" src="assets/JG_fresh_meal.png" alt="JourneyGenie, LampWorld Meal, static">
+<img class="genimg" style="width:150px" src="assets/JG_fresh_popcorn.png" alt="JourneyGenie, LampWorld Popcorn, static">
+<img class="genimg" style="width:150px" src="assets/JG_fresh_offduty_social.png" alt="JourneyGenie, OffDuty Social, static">
+<img class="genimg" style="width:150px" src="assets/JG_fresh_offduty_clean.png" alt="JourneyGenie, OffDuty Clean, static">
+</div></div>
+</div>
+</div>
+</section>
+
+<!-- 4 VOTE -->
+<section class="screen" id="s4">
+<h2>Decide together, <em class="accent">vote in the trip</em></h2>
+<div class="card">
+<p class="muted">JourneyGenie checked these options against the place, the dates, the cost, and the people going, before showing them. Sample options only.</p>
+<div class="opt" id="optA"><h3>Option A: Lisbon, beach house, June 12 to 19</h3><p>Sample cost: 820 each, sample data only.</p><p>Votes: <strong id="votesA">4</strong></p><button type="button" class="voteBtn primary" data-opt="A">Vote for Option A</button></div>
+<div class="opt" id="optB"><h3>Option B: Lisbon, city hotel, June 12 to 19</h3><p>Sample cost: 940 each, sample data only.</p><p>Votes: <strong id="votesB">3</strong></p><button type="button" class="voteBtn" data-opt="B">Vote for Option B</button></div>
+<div class="opt" id="optC"><h3>Option C: Porto, city hotel, June 12 to 19</h3><p>Sample cost: 760 each, sample data only.</p><p>Votes: <strong id="votesC">2</strong></p><button type="button" class="voteBtn" data-opt="C">Vote for Option C</button></div>
+<p id="voteMsg" class="muted"></p>
+</div>
+</section>
+
+<!-- 5 CONFIRM -->
+<section class="screen" id="s5">
+<h2>Who is <em class="accent">actually ready</em>, before anyone spends</h2>
+<div class="card">
+<p class="muted">Green means confirmed. Amber means still has something to sort out. No one is marked confirmed until they confirm.</p>
+<div class="row"><div><strong>Sample Member A, you</strong><br><span class="muted">Flight, hotel, visa: all in</span></div><span class="pill ok">Confirmed</span></div>
+<div class="row"><div><strong>Sample Member B</strong><br><span class="muted">Flight in, hotel pending</span></div><span id="pillB" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="B">Confirm Member B</button></div>
+<div class="row"><div><strong>Sample Member C</strong><br><span class="muted">Flight pending, visa pending</span></div><span id="pillC" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="C">Confirm Member C</button></div>
+<p id="confirmMsg" class="muted"></p>
+</div>
+</section>
+
+<!-- 6 EXPENSE -->
+<section class="screen" id="s6">
+<h2>Split costs, <em class="accent">line by line</em></h2>
+<div class="card">
+<p class="muted">Expense tracking only. No money moves through TripCircle. The person who owes gets the reminder, so you do not have to chase.</p>
+<div class="row"><div><strong>Beach house, sample</strong><br><span class="muted">Split 3 ways, sample amounts only</span></div><span id="remA">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="A">Send reminder to Member B</button></div>
+<div class="row"><div><strong>Group dinner, sample</strong><br><span class="muted">Split 3 ways, sample amounts only</span></div><span id="remB">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="B">Send reminder to Member C</button></div>
+<div class="row"><div><strong>Airport rides, sample</strong><br><span class="muted">Paid by Member A, sample, owed back in the split</span></div><span class="pill ok">Tracked, not paid in app</span></div>
+<p id="remMsg" class="muted"></p>
+</div>
+</section>
+<!-- 7 WALLET CHECK-IN -->
+<section class="screen" id="s7">
+<h2>Your docs, <em class="accent">checked in by hand</em></h2>
+<div class="card">
+<h3>Sample trip: Lisbon with your crew</h3>
+<p class="muted">Manual check-in only. This is not an airline or hotel confirmation.</p>
+<div class="row"><div><strong>Flight, sample</strong><br><span class="muted">Sample Air, SA 101, sample cities</span><br><span class="pill">Boarding pass on file</span> <span class="pill ok" id="flightPill">Flight: not checked in</span></div><button type="button" class="checkBtn primary" data-label="Flight">Mark flight checked in</button></div>
+<div class="row"><div><strong>Hotel, sample</strong><br><span class="muted">Sample Hotel, June 12 to 19</span><br><span class="pill ok" id="hotelPill">Hotel: not checked in</span></div><button type="button" class="checkBtn" data-label="Hotel">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Visa, sample</strong><br><span class="muted">Sample Country, e-visa, single entry</span><br><span class="pill ok">Visa: approved, manual</span></div><button type="button">View approval file, sample</button></div>
+<p class="checkMsg muted"></p>
+<div style="border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center"><p class="muted">Sample pass only, not a real boarding pass</p><h3>SA 101</h3><p>Sample City A to Sample City B, Seat: sample, 12A</p><p class="muted">Made to open fast with no signal, in the ported app.</p></div>
+</div>
+</section>
+
+<!-- 8 PARTY VIEW -->
+<section class="screen" id="s8">
+<h2>Party view, <em class="accent">one row per person</em></h2>
+<div class="card">
+<button type="button" id="demoAllChecked">Demo: mark all sample members checked in</button>
+<label class="switch" style="margin-left:12px"><input type="checkbox" id="uncheckedOnly"> Show unchecked only</label>
+<label class="switch" style="margin-left:12px"><input type="checkbox" id="visaOnly"> Show visas not approved yet</label>
+<div id="allChecked" class="banner hidden" style="margin-top:14px"><strong>All checked in.</strong> Every party member is marked checked in for this flight, manual labels only.</div>
+<div class="row partyRow" data-checked="yes" data-visa="approved"><div><strong>Sample Member A, you</strong><br><span class="muted">Flight: sample, checked in. Hotel: sample. Visa: approved.</span><br><span class="pill">Pass on file</span></div><span class="pill ok">Checked in, manual</span></div>
+<div class="row partyRow" data-checked="no" data-visa="approved"><div><strong>Sample Member B</strong><br><span class="muted">Flight: sample, not checked in. Hotel: sample. Visa: approved.</span><br><span class="pill">Pass on file</span></div><span class="pill warn">Not checked in</span></div>
+<div class="row partyRow" data-checked="no" data-visa="pending"><div><strong>Sample Member C</strong><br><span class="muted">Flight: sample, not checked in. Hotel: sample. Visa: not approved yet.</span><br><span class="pill">Pass presence only</span></div><span class="pill warn">Not checked in</span></div>
+<p class="muted">Summary only sharing is on for this sample trip, so booking refs are hidden in this view.</p>
+</div>
+</section>
+
+<!-- 9 LOUMI DASHBOARD -->
+<section class="screen" id="s9">
+<h2>Same mess, <em class="accent">in organizations too</em></h2>
+<div class="card">
+<p>This also happens in organizations, same mess, just bigger. A few people managing the details for many others, like travel sports teams and religious organizations. Same product, different login. The organization side below uses the name organization side only, on camera.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+<button type="button" class="orgTab primary" data-org="youth">Youth trips</button>
+<button type="button" class="orgTab" data-org="adult">Adult trips</button>
+</div>
+<p id="orgText"><strong>Youth trips:</strong> tournament trip, parents involved, roster and forms in one place.</p>
+<img class="frameimg" src="loumi/frame-01-dashboard.png" alt="Organization dashboard frame, youth and adult trips side by side, static image with clickable navigation">
+<p class="muted">Dashboard image is a static frame. The tabs above, and the Next and Back buttons, are interactive. Tap Next to walk the organization flow in order.</p>
+<button type="button" class="primary" onclick="go(10)">Open roster</button>
+</div>
+</section>
+
+<!-- 10 ROSTER -->
+<section class="screen" id="s10">
+<h2>Roster and <em class="accent">eligibility</em>, in one place</h2>
+<div class="card">
+<img class="frameimg" src="loumi/frame-02-roster.png" alt="Roster frame, static image">
+<p class="muted">Roster image is a static frame. The checklist below is interactive and drives the missing count.</p>
+<h3>Eligibility checklist, sample</h3>
+<label class="switch"><input type="checkbox" class="elig" checked> Sample Member A: form in, fee tracked</label><br>
+<label class="switch"><input type="checkbox" class="elig"> Sample Member B: permission slip missing</label><br>
+<label class="switch"><input type="checkbox" class="elig"> Sample Member C: medical form missing</label>
+<p><strong id="eligMsg">2 members still missing something.</strong></p>
+<button type="button" class="primary" onclick="go(11)">Open gated check-in</button>
+</div>
+</section>
+
+<!-- 11 GATED CHECK-IN -->
+<section class="screen" id="s11">
+<h2>Document checklist <em class="accent">gates check-in</em></h2>
+<div class="card">
+<img class="frameimg" src="loumi/frame-03-wallet-list.png" alt="Organization wallet list frame, static image">
+<p class="muted">Wallet list image is a static frame. The gate below is interactive: check-in stays locked until every required item is ticked.</p>
+<label class="switch"><input type="checkbox" class="gate"> Permission slip, required</label><br>
+<label class="switch"><input type="checkbox" class="gate"> Trip form, required</label><br>
+<label class="switch"><input type="checkbox" class="gate"> Fee tracked, required</label>
+<p id="gateMsg"><strong>Check-in locked:</strong> 3 required items still unchecked.</p>
+<button type="button" id="gateBtn" class="primary" disabled>Check in, locked until all required items are ticked</button>
+<div style="margin-top:14px"><img class="frameimg" src="loumi/frame-04-wallet-detail.png" alt="Organization wallet detail frame, static image"></div>
+</div>
+</section>
+
+<!-- 12 ANNOUNCEMENT -->
+<section class="screen" id="s12">
+<h2>One announcement, <em class="accent">to everyone</em></h2>
+<div class="card">
+<img class="frameimg" src="loumi/frame-05-announcement.png" alt="Announcement frame, static image">
+<p class="muted">Announcement image is a static frame. The composer below is interactive.</p>
+<label for="annInput">Announcement to the whole organization</label>
+<input id="annInput" type="text" value="Bus leaves at 8am from the school lot, bring your pass and water." aria-label="Announcement text">
+<button type="button" class="primary" id="annSend" style="margin-top:10px">Send announcement</button>
+<div id="annList" style="margin-top:14px"><p class="muted">No announcement sent yet in this demo run.</p></div>
+</div>
+</section>
+
+<!-- 13 ADULT BOARD -->
+<section class="screen" id="s13">
+<h2>Adult team board, <em class="accent">coordination, not oversight</em></h2>
+<div class="card">
+<img class="frameimg" src="loumi/frame-06-board.png" alt="Adult team board frame, static image">
+<p class="muted">Board image is a static frame. The rows below are interactive, and show flight and hotel check-in states only, no files, no visa details, no booking refs.</p>
+<div class="row"><div><strong>Teammate A, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardA">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="A">Mark flight checked in</button></div>
+<div class="row"><div><strong>Teammate B, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardB">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="B">Mark hotel checked in</button></div>
+</div>
+</section>
+
+<!-- 14 TRIP DAY -->
+<section class="screen" id="s14">
+<h2>Trip day, <em class="accent">everyone knows where to be</em></h2>
+<div class="card">
+<img class="frameimg" src="loumi/frame-07-payoff.png" alt="Trip day payoff frame, static image">
+<p class="muted">Payoff image is a static frame. Tap a stop below to expand its detail, right under that stop.</p>
+<button type="button" class="stopBtn primary" data-stop="bus">8am: Bus leaves</button>
+<div id="detail-bus" class="detail hidden">Meet at the school lot, bring your pass and water, sample only.</div>
+<button type="button" class="stopBtn" data-stop="game" style="margin-top:8px">11am: Game and group photo</button>
+<div id="detail-game" class="detail hidden">Meet at the field gate, group photo after the game, sample only.</div>
+<button type="button" class="stopBtn" data-stop="home" style="margin-top:8px">6pm: Bus home</button>
+<div id="detail-home" class="detail hidden">Bus leaves from the field lot, parents meet at the school lot, sample only.</div>
+</div>
+</section>
+
+<!-- 15 CLOSE -->
+<section class="screen" id="s15">
+<h2>From we should go, <em class="accent">to everyone showing up</em></h2>
+<div class="card">
+<p style="font-size:20px">This is TripCircle, the missing piece that gets a group trip from we should go, to everyone showing up.</p>
+<p><strong>MVP demo only. Sample data only, not a live app.</strong> Join the founding waitlist at tripcircle.us/beta and claim your founding spot.</p>
+<img class="genimg" src="assets/JG_fresh_fullform.png" alt="JourneyGenie, full form, static image">
+<p class="muted">JourneyGenie here is a static image on the close screen, so the close screen shows one JourneyGenie only, not two at once with the Rive canvas.</p>
+<button type="button" class="primary" onclick="go(1)">Replay from the hook</button>
+</div>
+</section>
+
+<p class="footer muted">Interactive demo prototype only. No live data, no real bookings, no app tree changes, no push, no live deploy. JourneyGenie Rive files are local copies of the verified file. Popcorn, Social, and Clean Rive runtime shots are deliberately not used, because their Chromium runtime captures showed a black bar. Their original whole images are used as static images only.</p>
+</main>
+<script>
+var steps=[
+{label:"Step 1 of 15: Wrong airport hook",hint:"Read the hook, then tap Next."},
+{label:"Step 2 of 15: Moodboard",hint:"Type a trip idea, copy the share link, tap Send one link."},
+{label:"Step 3 of 15: JourneyGenie chat",hint:"Tap Ask about dates, budgets, preferences. Watch JourneyGenie type slowly. Tap Celebrate."},
+{label:"Step 4 of 15: Vote",hint:"Tap Vote on an option card, watch the vote count move."},
+{label:"Step 5 of 15: Confirm",hint:"Tap Confirm on a pending member, watch amber turn green."},
+{label:"Step 6 of 15: Expense split",hint:"Tap Send reminder, watch the reminder state change."},
+{label:"Step 7 of 15: Wallet check-in toggle",hint:"Tap Mark flight checked in, watch the pill change to checked in."},
+{label:"Step 8 of 15: Party view filter",hint:"Tick Show unchecked only, then Demo mark all checked in."},
+{label:"Step 9 of 15: Organization dashboard",hint:"Tap Youth trips, then Adult trips, then Open roster."},
+{label:"Step 10 of 15: Roster",hint:"Tick the eligibility boxes, watch the missing count change."},
+{label:"Step 11 of 15: Gated check-in",hint:"Tick all 3 required items, watch Check in unlock, then tap it."},
+{label:"Step 12 of 15: Announcement",hint:"Edit the announcement text, tap Send announcement."},
+{label:"Step 13 of 15: Adult board",hint:"Tap Mark flight or hotel checked in, states only, no refs."},
+{label:"Step 14 of 15: Trip day payoff",hint:"Tap a stop, its detail opens right under that stop."},
+{label:"Step 15 of 15: Close MVP",hint:"Read the MVP close, then Replay from the hook if needed."}
+];
+var current=1;
+var jumpNav=document.getElementById('jumpNav');
+steps.forEach(function(s,i){
+var b=document.createElement('button');b.type='button';b.textContent=(i+1)+'. '+s.label.replace(/^Step \d+ of 15: /,'');b.onclick=function(){go(i+1)};b.id='jump'+(i+1);jumpNav.appendChild(b);
+});
+function go(n){
+current=Math.max(1,Math.min(15,n));
+document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active')});
+document.getElementById('s'+current).classList.add('active');
+document.getElementById('stepLabel').textContent=steps[current-1].label;
+document.getElementById('stepHint').textContent=steps[current-1].hint;
+for(var i=1;i<=15;i++){var j=document.getElementById('jump'+i);if(j)j.classList.toggle('now',i===current)}
+window.scrollTo({top:0,behavior:'smooth'});
+}
+document.getElementById('nextBtn').onclick=function(){go(current+1)};
+document.getElementById('backBtn').onclick=function(){go(current-1)};
+document.getElementById('themeBtn').onclick=function(){
+var html=document.documentElement;var dark=html.getAttribute('data-theme')!=='dark';
+html.setAttribute('data-theme',dark?'dark':'light');
+document.getElementById('themeBtn').textContent=dark?'Switch to light theme':'Switch to dark theme';
+};
+var ideaInput=document.getElementById('ideaInput');
+ideaInput.addEventListener('input',function(){document.getElementById('ideaOut').textContent=ideaInput.value||'One trip idea';});
+document.getElementById('shareBtn').onclick=function(){
+var link='tripcircle.us/trip/sample-lisbon-june';
+try{navigator.clipboard.writeText(link);}catch(e){}
+document.getElementById('shareMsg').textContent='Share link copied: '+link;
+};
+document.getElementById('joinBtn').onclick=function(){
+var names=['Sample Member A, you','Sample Member B','Sample Member C'];
+var list=document.getElementById('joinedList');list.innerHTML='';
+names.forEach(function(n,i){setTimeout(function(){var p=document.createElement('p');p.innerHTML='<span class="pill ok">Joined</span> '+n;list.appendChild(p);},i*600)});
+};
+function typeMsg(text,cls){
+var box=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg '+cls;d.textContent='';box.appendChild(d);
+var i=0;var t=setInterval(function(){d.textContent=text.slice(0,++i);box.scrollTop=box.scrollHeight;if(i>=text.length)clearInterval(t)},18);
+}
+var asks={
+dates:'JourneyGenie: When are you thinking? June 12 to 19 works for the sample group, and I checked that plan against the place, the dates, the cost, and the people going, before showing it.',
+budget:'JourneyGenie: What budget feels right? The sample options are 760 to 940 each, and the group can vote in the trip, not in a side chat.',
+prefs:'JourneyGenie: Beach days, one big group dinner, and no early flights? Got it. I will build options around that, and show who is actually ready, before anyone spends.'
+};
+document.querySelectorAll('.chatAsk').forEach(function(b){b.onclick=function(){typeMsg(asks[b.dataset.ask],'genie')}});
+document.getElementById('chatSend').onclick=function(){
+var v=document.getElementById('chatInput').value.trim();if(!v)return;
+typeMsg(v,'user');document.getElementById('chatInput').value='';
+setTimeout(function(){typeMsg('JourneyGenie: Noted. I checked that against the sample plan, and I will show it in the vote step next.','genie')},900);
+};
+document.querySelectorAll('.voteBtn').forEach(function(b){b.onclick=function(){
+var opt=b.dataset.opt;var el=document.getElementById('votes'+opt);el.textContent=parseInt(el.textContent,10)+1;
+document.querySelectorAll('.opt').forEach(function(o){o.classList.remove('voted')});
+document.getElementById('opt'+opt).classList.add('voted');
+document.getElementById('voteMsg').textContent='Your vote moved Option '+opt+' up by one. Vote counts update in the trip, not in a side chat.';
+}});
+document.querySelectorAll('.confirmBtn').forEach(function(b){b.onclick=function(){
+var who=b.dataset.who;var pill=document.getElementById('pill'+who);
+pill.textContent='Confirmed';pill.className='pill ok';b.disabled=true;b.textContent='Confirmed';
+document.getElementById('confirmMsg').textContent='Member '+who+' is now confirmed, green. No one spends until the group can see who is actually ready.';
+}});
+document.querySelectorAll('.remBtn').forEach(function(b){b.onclick=function(){
+var k=b.dataset.rem;document.getElementById('rem'+k).textContent='Reminder sent, sample only';
+document.getElementById('remMsg').textContent='Reminder sent to that member in this demo. No money moved, this is expense tracking only.';b.disabled=true;
+}});
+document.querySelectorAll('.checkBtn').forEach(function(btn){btn.onclick=function(){
+btn.textContent=btn.dataset.label+': checked in, manual';btn.disabled=true;
+var msg=btn.closest('.card').querySelector('.checkMsg');if(msg)msg.textContent='Marked checked in by you, manual only, not an airline or hotel confirmation.';
+if(btn.dataset.label==='Flight')document.getElementById('flightPill').textContent='Flight: checked in, manual';
+if(btn.dataset.label==='Hotel')document.getElementById('hotelPill').textContent='Hotel: checked in, manual';
+}});
+var unchecked=document.getElementById('uncheckedOnly'),visaOnly=document.getElementById('visaOnly');
+function applyFilters(){
+var anyUnchecked=false;
+document.querySelectorAll('.partyRow').forEach(function(row){
+var show=true;
+if(unchecked.checked&&row.dataset.checked!=='no')show=false;
+if(visaOnly.checked&&row.dataset.visa==='approved')show=false;
+row.classList.toggle('hidden',!show);
+if(row.dataset.checked==='no'&&show)anyUnchecked=true;
+});
+var banner=document.getElementById('allChecked');
+var visible=[].some.call(document.querySelectorAll('.partyRow'),function(r){return !r.classList.contains('hidden')});
+banner.classList.toggle('hidden',anyUnchecked||!visible);
+}
+unchecked.addEventListener('change',applyFilters);visaOnly.addEventListener('change',applyFilters);
+document.getElementById('demoAllChecked').onclick=function(){
+document.querySelectorAll('.partyRow').forEach(function(r){r.dataset.checked='yes'});
+document.getElementById('allChecked').classList.remove('hidden');applyFilters();
+document.getElementById('allChecked').classList.remove('hidden');
+};
+document.querySelectorAll('.orgTab').forEach(function(b){b.onclick=function(){
+document.querySelectorAll('.orgTab').forEach(function(x){x.classList.remove('primary')});b.classList.add('primary');
+document.getElementById('orgText').innerHTML=b.dataset.org==='youth'
+?'<strong>Youth trips:</strong> tournament trip, parents involved, roster and forms in one place.'
+:'<strong>Adult trips:</strong> golf trip, teammates coordinate peer to peer, flight and hotel states only, no oversight of files.';
+}});
+function eligUpdate(){
+var missing=0;document.querySelectorAll('.elig').forEach(function(c){if(!c.checked)missing++});
+document.getElementById('eligMsg').textContent=missing+' members still missing something.';
+}
+document.querySelectorAll('.elig').forEach(function(c){c.addEventListener('change',eligUpdate)});eligUpdate();
+function gateUpdate(){
+var left=0;document.querySelectorAll('.gate').forEach(function(c){if(!c.checked)left++});
+var btn=document.getElementById('gateBtn');
+if(left===0){document.getElementById('gateMsg').innerHTML='<strong>Check-in unlocked:</strong> all required items ticked.';btn.disabled=false;btn.textContent='Check in now';}
+else{document.getElementById('gateMsg').innerHTML='<strong>Check-in locked:</strong> '+left+' required items still unchecked.';btn.disabled=true;btn.textContent='Check in, locked until all required items are ticked';}
+}
+document.querySelectorAll('.gate').forEach(function(c){c.addEventListener('change',gateUpdate)});gateUpdate();
+document.getElementById('gateBtn').onclick=function(){this.textContent='Checked in, gated check complete';this.disabled=true;document.getElementById('gateMsg').textContent='Checked in. The gate opened only after every required item was ticked.';};
+document.getElementById('annSend').onclick=function(){
+var v=document.getElementById('annInput').value.trim();if(!v)return;
+var list=document.getElementById('annList');list.innerHTML='<div class="card" style="margin:0"><strong>Announcement sent to everyone, sample:</strong><p style="margin-top:8px">'+v.replace(/</g,'&lt;')+'</p><p class="muted">One message, no scattered chats.</p></div>';
+};
+document.querySelectorAll('.boardBtn').forEach(function(b){b.onclick=function(){
+var k=b.dataset.board;var el=document.getElementById('board'+k);
+el.textContent=b.textContent.indexOf('flight')>=0?'Flight: checked in, Hotel: not checked in':'Flight: not checked in, Hotel: checked in';
+b.disabled=true;
+}});
+document.querySelectorAll('.stopBtn').forEach(function(b){b.onclick=function(){
+var d=document.getElementById('detail-'+b.dataset.stop);d.classList.toggle('hidden');
+}});
+// Rive, FullForm Idle and Celebrating, plus LampWorld Meal, one canvas only
+var riveObj=null,currentArt='JourneyGenieFullForm';
+function loadRive(art){
+try{
+if(window.rive&&rive.RuntimeLoader)rive.RuntimeLoader.setWasmUrl('assets/rive.wasm');
+var sm=art==='JourneyGenieFullForm'?'JourneyGenieFullForm':'State Machine 1';
+if(riveObj&&riveObj.cleanup)riveObj.cleanup();
+riveObj=new rive.Rive({src:'assets/journeygeniefullform.riv',canvas:document.getElementById('riveCanvas'),autoplay:true,artboard:art,stateMachines:sm,
+onLoad:function(){document.getElementById('riveStatus').textContent='Loaded: '+art+', state machine: '+sm+'. Tap Celebrate on FullForm.';document.getElementById('riveFallback').classList.add('hidden');},
+onLoadError:function(){document.getElementById('riveStatus').textContent='Rive did not load from a file path, showing the static image instead. Serve this folder over http for live Rive.';document.getElementById('riveFallback').classList.remove('hidden');}
+});
+}catch(e){document.getElementById('riveStatus').textContent='Rive load failed, showing the static image instead: '+e.message;document.getElementById('riveFallback').classList.remove('hidden');}
+}
+document.getElementById('celebrateBtn').onclick=function(){
+try{var inputs=riveObj.stateMachineInputs('JourneyGenieFullForm');var t=inputs.find(function(i){return i.name==='isCelebrating'});if(t)t.fire();document.getElementById('riveStatus').textContent='JourneyGenie celebrating, fired isCelebrating, then back to Idle.';}catch(e){document.getElementById('riveStatus').textContent='Celebrate needs FullForm loaded. Tap Back to FullForm first.';}
+};
+document.getElementById('mealBtn').onclick=function(){currentArt='LampWorld Meal';loadRive(currentArt);};
+document.getElementById('fullformBtn').onclick=function(){currentArt='JourneyGenieFullForm';loadRive(currentArt);};
+if(window.rive){loadRive(currentArt);}else{document.getElementById('riveStatus').textContent='Rive script did not load from a file path, showing the static image instead. Serve this folder over http for live Rive.';document.getElementById('riveFallback').classList.remove('hidden');}
+go(1);
+</script>
+</body>
+</html>
