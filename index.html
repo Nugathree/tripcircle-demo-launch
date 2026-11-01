@@ -52,6 +52,15 @@ img.frameimg{width:100%;height:auto;border:1px solid var(--line);border-radius:2
 label.switch{display:inline-flex;align-items:center;gap:10px;min-height:44px;cursor:pointer;font-weight:700}
 input[type="checkbox"]{width:22px;height:22px;accent-color:var(--ink);min-height:22px}
 .detail{border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-top:8px;background:var(--bg)}
+.orgtrip{border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;background:var(--card)}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:8px 0}
+.fill{height:100%;background:var(--keppel);border-radius:4px}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin:12px 0}
+.statbox{border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--card)}
+.statbox b{font-family:"Sora",sans-serif;font-size:24px}
+table.orgtable{width:100%;border-collapse:collapse}
+table.orgtable th{text-align:left;font-size:13px;color:var(--muted);padding:8px;border-bottom:1px solid var(--line)}
+table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
 .footer{font-size:14px}
 </style>
 </head>
@@ -196,7 +205,7 @@ input[type="checkbox"]{width:22px;height:22px;accent-color:var(--ink);min-height
 </div>
 </section>
 
-<!-- 9 LOUMI DASHBOARD -->
+<!-- 9 ORGANIZATION DASHBOARD, LIVE -->
 <section class="screen" id="s9">
 <h2>Same mess, <em class="accent">in organizations too</em></h2>
 <div class="card">
@@ -206,48 +215,86 @@ input[type="checkbox"]{width:22px;height:22px;accent-color:var(--ink);min-height
 <button type="button" class="orgTab" data-org="adult">Adult trips</button>
 </div>
 <p id="orgText"><strong>Youth trips:</strong> tournament trip, parents involved, roster and forms in one place.</p>
-<img class="frameimg" src="loumi/frame-01-dashboard.png" alt="Organization dashboard frame, youth and adult trips side by side, static image with clickable navigation">
-<p class="muted">Dashboard image is a static frame. The tabs above, and the Next and Back buttons, are interactive. Tap Next to walk the organization flow in order.</p>
+<div class="orgtrip" id="orgTripYouth">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between"><h3>Spring Tournament Trip</h3><span class="pill ok">Youth trip</span></div>
+<p class="muted">Example Club, Mar 14 to 16, 2026, Example Arena, Example City</p>
+<p>18 of 22 items done</p>
+<div class="bar"><div class="fill" style="width:82%"></div></div>
+<h3 style="margin-top:14px">Upcoming deadlines</h3>
+<div class="row"><div>Permission slips due, youth trip</div><span class="muted">Mar 1, 2026</span></div>
+<div class="row"><div>Trip day, youth trip</div><span class="muted">Mar 14, 2026</span></div>
+</div>
+<div class="orgtrip hidden" id="orgTripAdult">
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between"><h3>Golf Comp Trip</h3><span class="pill">Adult trip</span></div>
+<p class="muted">Example Golf Club, Apr 10 to 12, 2026, Example Course, Example City</p>
+<p>12 of 16 checked in</p>
+<div class="bar"><div class="fill" style="width:75%"></div></div>
+<h3 style="margin-top:14px">Upcoming deadlines</h3>
+<div class="row"><div>Trip day, adult trip</div><span class="muted">Apr 10, 2026</span></div>
+</div>
+<p class="muted">Live screen, sample data only. Tap a tab to switch the trip list.</p>
 <button type="button" class="primary" onclick="go(10)">Open roster</button>
 </div>
 </section>
 
-<!-- 10 ROSTER -->
+<!-- 10 ROSTER, LIVE -->
 <section class="screen" id="s10">
 <h2>Roster and <em class="accent">eligibility</em>, in one place</h2>
 <div class="card">
-<img class="frameimg" src="loumi/frame-02-roster.png" alt="Roster frame, static image">
-<p class="muted">Roster image is a static frame. The checklist below is interactive and drives the missing count.</p>
-<h3>Eligibility checklist, sample</h3>
-<label class="switch"><input type="checkbox" class="elig" checked> Sample Member A: form in, fee tracked</label><br>
-<label class="switch"><input type="checkbox" class="elig"> Sample Member B: permission slip missing</label><br>
-<label class="switch"><input type="checkbox" class="elig"> Sample Member C: medical form missing</label>
+<p class="muted">Spring Tournament Trip, Example Club. One roster, live eligibility, no spreadsheet. Sample data only.</p>
+<table class="orgtable">
+<tr><th>Member</th><th>Role</th><th>Form ticked</th><th>Forms</th></tr>
+<tr><td>Sample Member A</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Sample Member A form in"></label></td><td><span class="pill ok" id="eligPill0">Complete</span></td></tr>
+<tr><td>Sample Member B</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Sample Member B form in"></label></td><td><span class="pill warn" id="eligPill1">Forms pending</span></td></tr>
+<tr><td>Sample Member C</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Sample Member C form in"></label></td><td><span class="pill warn" id="eligPill2">Forms pending</span></td></tr>
+<tr><td>Sample Member D</td><td>Coach</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Sample Member D form in"></label></td><td><span class="pill ok" id="eligPill3">Complete</span></td></tr>
+</table>
 <p><strong id="eligMsg">2 members still missing something.</strong></p>
+<p class="muted">Tick a box in the table and that member moves to Complete, and the missing count drops. A member with a missing form shows up here before trip day, so nothing is a surprise at check-in.</p>
 <button type="button" class="primary" onclick="go(11)">Open gated check-in</button>
 </div>
 </section>
 
-<!-- 11 GATED CHECK-IN -->
+<!-- 11 GATED CHECK-IN, LIVE -->
 <section class="screen" id="s11">
 <h2>Document checklist <em class="accent">gates check-in</em></h2>
 <div class="card">
-<img class="frameimg" src="loumi/frame-03-wallet-list.png" alt="Organization wallet list frame, static image">
-<p class="muted">Wallet list image is a static frame. The gate below is interactive: check-in stays locked until every required item is ticked.</p>
+<h3>Travel Wallet, one row per person</h3>
+<p class="muted">Spring Tournament Trip, Example Club. Check-in here is manual only, and visa status is as provided by the org or family. Sample data only.</p>
+<div class="row"><div><strong>Sample Member A</strong><br><span class="muted">Flight checked in. Hotel checked in. Visa: Canada, Approved. Boarding pass on file.</span></div><span class="pill ok">Checked in</span></div>
+<div class="row"><div><strong>Sample Member B</strong><br><span class="muted">Flight not checked in. Hotel not checked in. Visa: Canada, Applied. No boarding pass uploaded yet.</span></div><span class="pill warn">Not checked in</span></div>
+<div class="row"><div><strong>Sample Member C</strong><br><span class="muted">Flight: no flight saved yet. Hotel: no hotel saved yet. Visa: no visa record yet.</span></div><span class="pill warn">Not cleared</span></div>
+<div class="detail"><strong>Not cleared, Sample Member C:</strong><br>Permission slip: missing<br>Medical form: missing</div>
+<h3 style="margin-top:18px">Gate for Sample Member B</h3>
+<p class="muted">Check-in stays locked until every required item is ticked.</p>
 <label class="switch"><input type="checkbox" class="gate"> Permission slip, required</label><br>
 <label class="switch"><input type="checkbox" class="gate"> Trip form, required</label><br>
 <label class="switch"><input type="checkbox" class="gate"> Fee tracked, required</label>
 <p id="gateMsg"><strong>Check-in locked:</strong> 3 required items still unchecked.</p>
 <button type="button" id="gateBtn" class="primary" disabled>Check in, locked until all required items are ticked</button>
-<div style="margin-top:14px"><img class="frameimg" src="loumi/frame-04-wallet-detail.png" alt="Organization wallet detail frame, static image"></div>
+<h3 style="margin-top:18px">Sample Member B, detail</h3>
+<div class="row"><div><strong>Flights</strong><br><span class="muted">Sample Air, Mar 14, 2026, sample cities. Manual check-in only.</span><br><span class="pill ok" id="orgFlightPill">Flight: not checked in</span></div><button type="button" class="primary" id="orgFlightBtn">Mark flight checked in</button></div>
+<div class="row"><div><strong>Hotel stays</strong><br><span class="muted">Sample Hotel, Mar 14 to 16, 2026. Manual check-in only.</span><br><span class="pill ok" id="orgHotelPill">Hotel: not checked in</span></div><button type="button" class="primary" id="orgHotelBtn">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Visa records</strong><br><span class="muted">Canada, E-visa, Applied, marked as required by the org. Visa status as provided by the org or family.</span></div><span class="pill warn">Visa: applied</span></div>
+<p class="muted">No booking refs are shown in this detail view.</p>
 </div>
 </section>
 
-<!-- 12 ANNOUNCEMENT -->
+<!-- 12 ANNOUNCEMENT, LIVE -->
 <section class="screen" id="s12">
 <h2>One announcement, <em class="accent">to everyone</em></h2>
 <div class="card">
-<img class="frameimg" src="loumi/frame-05-announcement.png" alt="Announcement frame, static image">
-<p class="muted">Announcement image is a static frame. The composer below is interactive.</p>
+<h3>Trip update</h3>
+<p class="muted">Sent Mar 10, 2026, seen by 20 of 22. Sample data only.</p>
+<div class="orgtrip">
+<p><strong>Buses leave at 7:00 AM on Mar 14</strong></p>
+<p>Meet at Example School. Bring your boarding pass and team kit. If you need check-in help, open your Travel Wallet.</p>
+<p><span class="pill ok">Everyone</span></p>
+</div>
+<div class="orgtrip" style="background:var(--tint)">
+<p><strong>Why it works for both</strong></p>
+<p>Youth trips reach families. Adult trips reach members. Same tool, same announcement.</p>
+</div>
 <label for="annInput">Announcement to the whole organization</label>
 <input id="annInput" type="text" value="Bus leaves at 8am from the school lot, bring your pass and water." aria-label="Announcement text">
 <button type="button" class="primary" id="annSend" style="margin-top:10px">Send announcement</button>
@@ -255,23 +302,37 @@ input[type="checkbox"]{width:22px;height:22px;accent-color:var(--ink);min-height
 </div>
 </section>
 
-<!-- 13 ADULT BOARD -->
+<!-- 13 ADULT BOARD, LIVE -->
 <section class="screen" id="s13">
 <h2>Adult team board, <em class="accent">coordination, not oversight</em></h2>
 <div class="card">
-<img class="frameimg" src="loumi/frame-06-board.png" alt="Adult team board frame, static image">
-<p class="muted">Board image is a static frame. The rows below are interactive, and show flight and hotel check-in states only, no files, no visa details, no booking refs.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between"><h3>Golf Comp Trip, team board</h3><span class="pill">Adult trip</span></div>
+<p class="muted">Example Golf Club. Teammates see the same board. No private details on it. Flight and hotel check-in states only, no files, no visa details, no booking refs. Sample data only.</p>
 <div class="row"><div><strong>Teammate A, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardA">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="A">Mark flight checked in</button></div>
 <div class="row"><div><strong>Teammate B, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardB">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="B">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Teammate C, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardC">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="C">Mark flight checked in</button></div>
+<p class="muted">Coordination, not oversight. No confirmation refs, no files, no visa details on this board.</p>
 </div>
 </section>
 
-<!-- 14 TRIP DAY -->
+<!-- 14 TRIP DAY, LIVE -->
 <section class="screen" id="s14">
 <h2>Trip day, <em class="accent">everyone knows where to be</em></h2>
 <div class="card">
-<img class="frameimg" src="loumi/frame-07-payoff.png" alt="Trip day payoff frame, static image">
-<p class="muted">Payoff image is a static frame. Tap a stop below to expand its detail, right under that stop.</p>
+<h3>Trip day, all in one place</h3>
+<p class="muted">Spring Tournament Trip, Example Club. Sample data only.</p>
+<p><strong>18 of 22 checked in</strong></p>
+<div class="bar"><div class="fill" style="width:82%"></div></div>
+<div class="statgrid">
+<div class="statbox"><div>Flights</div><b>18 of 22</b><div class="muted">Checked in</div></div>
+<div class="statbox"><div>Hotels</div><b>16 of 22</b><div class="muted">Checked in</div></div>
+<div class="statbox"><div>Visas</div><b>20 of 22</b><div class="muted">Ready</div></div>
+</div>
+<div class="orgtrip" style="background:var(--tint)">
+<p><strong>One product, both kinds of teams</strong></p>
+<p>Youth trips keep parents involved. Adult trips coordinate peer to peer. Same wallet, same board, same tool.</p>
+</div>
+<p class="muted">Tap a stop to expand its detail, right under that stop.</p>
 <button type="button" class="stopBtn primary" data-stop="bus">8am: Bus leaves</button>
 <div id="detail-bus" class="detail hidden">Meet at the school lot, bring your pass and water, sample only.</div>
 <button type="button" class="stopBtn" data-stop="game" style="margin-top:8px">11am: Game and group photo</button>
@@ -404,12 +465,16 @@ document.getElementById('allChecked').classList.remove('hidden');
 };
 document.querySelectorAll('.orgTab').forEach(function(b){b.onclick=function(){
 document.querySelectorAll('.orgTab').forEach(function(x){x.classList.remove('primary')});b.classList.add('primary');
-document.getElementById('orgText').innerHTML=b.dataset.org==='youth'
+var youth=b.dataset.org==='youth';
+document.getElementById('orgTripYouth').classList.toggle('hidden',!youth);
+document.getElementById('orgTripAdult').classList.toggle('hidden',youth);
+document.getElementById('orgText').innerHTML=youth
 ?'<strong>Youth trips:</strong> tournament trip, parents involved, roster and forms in one place.'
 :'<strong>Adult trips:</strong> golf trip, teammates coordinate peer to peer, flight and hotel states only, no oversight of files.';
 }});
 function eligUpdate(){
-var missing=0;document.querySelectorAll('.elig').forEach(function(c){if(!c.checked)missing++});
+var missing=0;document.querySelectorAll('.elig').forEach(function(c,i){if(!c.checked)missing++;
+var pill=document.getElementById('eligPill'+i);if(pill){pill.textContent=c.checked?'Complete':'Forms pending';pill.className=c.checked?'pill ok':'pill warn';}});
 document.getElementById('eligMsg').textContent=missing+' members still missing something.';
 }
 document.querySelectorAll('.elig').forEach(function(c){c.addEventListener('change',eligUpdate)});eligUpdate();
@@ -421,13 +486,18 @@ else{document.getElementById('gateMsg').innerHTML='<strong>Check-in locked:</str
 }
 document.querySelectorAll('.gate').forEach(function(c){c.addEventListener('change',gateUpdate)});gateUpdate();
 document.getElementById('gateBtn').onclick=function(){this.textContent='Checked in, gated check complete';this.disabled=true;document.getElementById('gateMsg').textContent='Checked in. The gate opened only after every required item was ticked.';};
+document.getElementById('orgFlightBtn').onclick=function(){document.getElementById('orgFlightPill').textContent='Flight: checked in, manual';this.textContent='Flight: checked in, manual';this.disabled=true;};
+document.getElementById('orgHotelBtn').onclick=function(){document.getElementById('orgHotelPill').textContent='Hotel: checked in, manual';this.textContent='Hotel: checked in, manual';this.disabled=true;};
 document.getElementById('annSend').onclick=function(){
 var v=document.getElementById('annInput').value.trim();if(!v)return;
 var list=document.getElementById('annList');list.innerHTML='<div class="card" style="margin:0"><strong>Announcement sent to everyone, sample:</strong><p style="margin-top:8px">'+v.replace(/</g,'&lt;')+'</p><p class="muted">One message, no scattered chats.</p></div>';
 };
 document.querySelectorAll('.boardBtn').forEach(function(b){b.onclick=function(){
 var k=b.dataset.board;var el=document.getElementById('board'+k);
-el.textContent=b.textContent.indexOf('flight')>=0?'Flight: checked in, Hotel: not checked in':'Flight: not checked in, Hotel: checked in';
+var flightChecked=el.textContent.indexOf('Flight: checked in')>=0;
+var hotelChecked=el.textContent.indexOf('Hotel: checked in')>=0;
+if(b.textContent.indexOf('flight')>=0)flightChecked=true;else hotelChecked=true;
+el.textContent='Flight: '+(flightChecked?'checked in':'not checked in')+', Hotel: '+(hotelChecked?'checked in':'not checked in');
 b.disabled=true;
 }});
 document.querySelectorAll('.stopBtn').forEach(function(b){b.onclick=function(){
