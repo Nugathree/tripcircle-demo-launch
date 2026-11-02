@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>TripCircle Demo - Interactive Prototype</title>
+<title>TripCircle</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="assets/rive.js"></script>
@@ -71,35 +71,95 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 .flowbar{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .flowbar .muted{font-size:14px}
 .hero{padding:28px 8px}
+.slidebackdrop{position:fixed;inset:0;background:rgba(28,28,28,0.35);display:none;z-index:40}
+.slidebackdrop.open{display:block}
+.slideout{position:fixed;top:0;right:0;height:100%;width:min(420px,92vw);background:var(--card);border-left:1px solid var(--line);padding:18px;overflow-y:auto;z-index:50;transform:translateX(105%);transition:transform 0.25s ease}
+.slideout.open{transform:translateX(0)}
+.featuregrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin:14px 0}
+.featurecard{border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--card)}
 .hero h2{font-size:40px;line-height:1.15}
+
+.landnav{display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;padding:18px 0}
+.landnav a{color:var(--text);text-decoration:none;font-size:15px}
+.landhero{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:center;padding:24px 0}
+@media(max-width:700px){.landhero{grid-template-columns:1fr}}
+.landhero h1{font-size:52px;line-height:1.05}
+.landhero h1 .teal{color:var(--keppel);font-style:normal}
+.eyebrow{color:var(--ink);font-weight:700;letter-spacing:2px;font-size:13px}
+.landphoto{width:100%;height:auto;border-radius:20px;display:block}
+.landdark{background:#1C1C1C;color:#fff;border-radius:20px;padding:24px;margin:24px 0}
+.landdark h2{color:#fff}
+.landdark .teal{color:var(--keppel);font-style:normal}
+.landcards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+@media(max-width:700px){.landcards{grid-template-columns:1fr}}
+.landcard{background:#2A2A2A;border:1px solid #3A3A3A;border-radius:16px;padding:16px;color:#fff}
+.landcard p{color:#D8D8D8}
 </style>
 </head>
 <body>
 <div class="chrome" aria-label="Browser window"><div class="dots"><span></span><span></span><span></span></div><div class="tab">TripCircle Demo</div><div class="addr">tripcircle-demo-launch.onrender.com</div></div>
 <header class="top">
-<div class="banner"><strong>MVP demo only. Sample data only, not a live app.</strong> No live booking, no live visa check, no money moves through TripCircle. Expense tracking and splits only.</div>
 <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;justify-content:space-between">
-<div><h1>TripCircle</h1><p class="muted" style="margin:0">Interactive demo prototype, click it, do not just watch it</p></div>
+<div><h1>TripCircle</h1></div>
 <button id="themeBtn" type="button">Switch to dark theme</button>
 </div>
 <div class="recbar" style="margin-top:14px;display:none">
-<div><strong id="stepLabel">Step 0: Landing</strong><br><span class="muted" id="stepHint">Tap Claim Your Founding Spot to enter the demo app.</span></div>
+<div><strong id="stepLabel">Step 0: Post-launch landing</strong><br><span class="muted" id="stepHint">Tap the JourneyGenie box to open the slide-out conversation on the right.</span></div>
 <div style="display:flex;gap:8px"><button id="backBtn" type="button">Back</button><button id="nextBtn" type="button" class="primary">Next step</button></div><p class="muted" style="font-size:13px;margin:6px 0 0">Fallback only. In the recording, use the button on each screen to move on, not this bar.</p>
 </div>
 <nav class="navgrid" id="jumpNav" aria-label="Recording steps"></nav>
 </header>
 <main class="wrap">
-<!-- 0 LANDING -->
+<!-- 0 POST-LAUNCH LANDING -->
 <section class="screen" id="s0">
-<div class="card hero">
-<p class="pill ok">MVP demo only. Sample data only, not a live app.</p>
-<h2>Plan <em class="accent">Epic</em> Group Trips</h2>
-<p style="font-size:20px">TripCircle helps groups plan trips together in one place and see at a glance who is ready and who still has something to sort out.</p>
-<p class="muted">One place to decide, confirm, and split. No more plan in six places. Scroll down, then tap the button to step inside the demo app.</p>
-<img class="genimg" src="assets/JG_fresh_fullform.png" alt="JourneyGenie, full form, static image">
-<div class="flowbar"><button type="button" class="primary" id="enterAppBtn" onclick="go(1)">Claim Your Founding Spot</button><span class="muted">Enters the demo app. Sample data only.</span></div>
-<p class="muted" style="margin-top:12px">Scroll down to the button, then tap it. That tap is the start of the walkthrough.</p>
+<div class="landnav">
+<div style="display:flex;gap:8px;align-items:center"><strong style="font-family:Sora,sans-serif;font-size:20px">TripCircle</strong></div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center">
+<a href="#how">How It Works</a><a href="#features">Features</a><a href="#faq">FAQ</a><a href="#blog">Blog</a>
+<span class="muted" style="font-size:13px">IG &nbsp; TT &nbsp; YT &nbsp; IN &nbsp; X &nbsp; FB</span>
+<button type="button" class="teal" id="navTryBtn">Try the App</button>
+<button type="button" id="navClaimBtn">Claim Your Founding Spot</button>
 </div>
+</div>
+<div class="landhero">
+<div>
+<p class="eyebrow">GROUP TRAVEL, REIMAGINED</p>
+<h1>Plan Epic Trips.<br><span class="teal">Just the Girls. No Excuses.</span></h1>
+<p style="font-size:18px">The AI-powered planner that helps friends organize, budget, and book trips together, all in one place.</p>
+<div style="display:flex;gap:10px;flex-wrap:wrap;margin:14px 0">
+<button type="button" class="teal" id="heroTryBtn">Try the App</button>
+<button type="button" id="heroClaimBtn">Claim Your Founding Spot</button>
+</div>
+<button type="button" onclick="document.getElementById('landDark').scrollIntoView({behavior:'smooth'})">See How It Works</button>
+<p class="muted" style="margin-top:12px">188+ founding members already on the waitlist</p>
+</div>
+<div>
+<img class="landphoto" src="assets/hero-girls-trip.jpg" alt="Friends on a beach trip, raising drinks together">
+<p class="muted" style="text-align:center;margin-top:8px;font-size:13px">● ○ ○ ○ ○ ○ ○ ○ ○ ○</p>
+</div>
+</div>
+<div class="landdark" id="landDark">
+<p style="text-align:center"><span class="pill" style="background:#1C1C1C;color:var(--keppel);border-color:var(--keppel)">SOUND FAMILIAR?</span></p>
+<h2 style="text-align:center">Group trips don't fall apart at the airport.<br><span class="teal">They fall apart in the group chat.</span></h2>
+<div class="landcards">
+<div class="landcard"><h3>The chat goes nowhere</h3><p>You spend two weeks in a group chat voting on dates, destinations, and budgets - and somehow end up back at square one. Decisions evaporate. Momentum dies.</p></div>
+<div class="landcard"><h3>One person carries everything</h3><p>Someone always ends up doing all the research, chasing people for money, and holding the whole trip together. That person is probably you. And you're tired.</p></div>
+<div class="landcard"><h3>The money conversation is awkward</h3><p>Splitting costs, tracking who paid what, reminding people to pay you back - it's not about the money. It's about the tension it creates every single time.</p></div>
+<div class="landcard"><h3>The trip never actually happens</h3><p>You've been planning Cancun for three years. Everyone's excited in January. By March, two people have conflicts. By June, the group chat is dead. Sound familiar?</p></div>
+</div>
+<p style="text-align:center"><strong>That's not a you problem. That's a system problem.</strong><br><span style="color:var(--keppel)">We built the system to coordinate group travel.</span></p>
+</div>
+<div id="how" style="text-align:center;padding:12px 0">
+<p class="eyebrow">HOW IT WORKS</p>
+<h2>Everything your group needs. One place.</h2>
+<p class="muted">No more juggling apps. No more chasing people. No more chaos.</p>
+</div>
+<div style="border:1px solid var(--line);border-radius:16px;padding:16px;background:var(--tint)">
+<label for="talkInput">Talk to JourneyGenie</label>
+<input id="talkInput" type="text" placeholder="Tell JourneyGenie your trip idea..." aria-label="Talk to JourneyGenie" style="margin-top:8px">
+<button type="button" class="primary" id="talkBtn" style="margin-top:10px">Talk to JourneyGenie</button>
+</div>
+<div class="flowbar"><button type="button" class="primary" id="landingEnterBtn">Enter the app</button></div>
 </section>
 
 <!-- 1 HOOK -->
@@ -120,13 +180,13 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <p class="muted" style="margin-top:10px">Type your own idea, the share card below updates as you type.</p>
 <div style="background:var(--tint);border:1px solid var(--line);border-radius:16px;padding:16px">
 <h3 id="ideaOut">Lisbon in June, beach days and one big group dinner</h3>
-<p class="muted">One link, one trip, on any phone. Sample data only.</p>
+<p class="muted">One link, one trip, on any phone.</p>
 <button type="button" class="primary" id="shareBtn">Copy share link</button> <span id="shareMsg" class="muted"></span>
 </div>
 <h3 style="margin-top:18px">Who joined, live</h3>
-<div id="joinedList"><p class="muted">No one joined yet in this demo run. Tap below.</p></div>
+<div id="joinedList"><p class="muted">No one joined yet. Tap below.</p></div>
 <button type="button" id="joinBtn">Send one link, watch the group join</button>
-<div class="flowbar"><button type="button" class="primary" onclick="go(3)">Continue to JourneyGenie chat</button><span class="muted">Scroll down, then continue. The group just joined above.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(4)">Continue to vote</button></div>
 </div>
 </section>
 
@@ -143,20 +203,15 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <button type="button" id="mealBtn">Switch to LampWorld Meal</button>
 <button type="button" id="fullformBtn">Back to FullForm</button>
 </div>
-<p class="muted">In this version, JourneyGenie is shown as a static image for the recording. Do not tap Celebrate or Switch to LampWorld Meal in the recording. One JourneyGenie at a time, one lamp only.</p>
+<p class="muted">One JourneyGenie at a time, one lamp only.</p>
 </div>
 <div style="flex:1;min-width:280px">
 <div class="chat" id="chatBox"><div class="msg genie" id="chatFirst">Hi, I am JourneyGenie. Tell me the trip, and I will check the plan before anyone sees it as true.</div></div>
-<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-<button type="button" class="chatAsk" data-ask="dates">Ask about dates</button>
-<button type="button" class="chatAsk" data-ask="budget">Ask about budgets</button>
-<button type="button" class="chatAsk" data-ask="prefs">Ask about preferences</button>
-</div>
-<input id="chatInput" type="text" placeholder="Type a reply, for example: June 12 to 19, about 800 each" style="margin-top:10px" aria-label="Reply to JourneyGenie">
+<input id="chatInput" type="text" placeholder="Type your trip in your own words" style="margin-top:10px" aria-label="Message to JourneyGenie">
 <button type="button" class="primary" id="chatSend" style="margin-top:10px">Send reply</button>
 <p class="muted" id="chatNote">JourneyGenie types slowly, on purpose, like a person typing. Its replies appear letter by letter.</p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(4)">Continue to vote</button><span class="muted">Tap Ask about dates first, watch JourneyGenie type, then continue.</span></div>
-<div class="card" style="margin-top:12px"><strong>Fun moments, static only for three states</strong><p class="muted">Popcorn, Social, and Clean are shown below as original whole images only. Their Rive runtime shots are not used here, because those runtime captures showed a black bar in Chromium.</p>
+<div class="flowbar"><button type="button" class="primary" onclick="go(4)">Continue to vote</button></div>
+<div class="card" style="margin-top:12px"><strong>Fun moments</strong><p class="muted">Fun moments below.</p>
 <div style="display:flex;gap:10px;flex-wrap:wrap">
 <img class="genimg" style="width:150px" src="assets/JG_fresh_meal.png" alt="JourneyGenie, LampWorld Meal, static">
 <img class="genimg" style="width:150px" src="assets/JG_fresh_popcorn.png" alt="JourneyGenie, LampWorld Popcorn, static">
@@ -171,12 +226,12 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <section class="screen" id="s4">
 <h2>Decide together, <em class="accent">vote in the trip</em></h2>
 <div class="card">
-<p class="muted">JourneyGenie checked these options against the place, the dates, the cost, and the people going, before showing them. Sample options only.</p>
-<div class="opt" id="optA"><h3>Option A: Lisbon, beach house, June 12 to 19</h3><p>Sample cost: 820 each, sample data only.</p><p>Votes: <strong id="votesA">4</strong></p><button type="button" class="voteBtn primary" data-opt="A">Vote for Option A</button></div>
-<div class="opt" id="optB"><h3>Option B: Lisbon, city hotel, June 12 to 19</h3><p>Sample cost: 940 each, sample data only.</p><p>Votes: <strong id="votesB">3</strong></p><button type="button" class="voteBtn" data-opt="B">Vote for Option B</button></div>
-<div class="opt" id="optC"><h3>Option C: Porto, city hotel, June 12 to 19</h3><p>Sample cost: 760 each, sample data only.</p><p>Votes: <strong id="votesC">2</strong></p><button type="button" class="voteBtn" data-opt="C">Vote for Option C</button></div>
+<p class="muted">JourneyGenie checked these options against the place, the dates, the cost, and the people going, before showing them.</p>
+<div class="opt" id="optA"><h3>Option A: Lisbon, beach house, June 12 to 19</h3><p>820 each.</p><p>Votes: <strong id="votesA">4</strong></p><button type="button" class="voteBtn primary" data-opt="A">Vote for Option A</button></div>
+<div class="opt" id="optB"><h3>Option B: Lisbon, city hotel, June 12 to 19</h3><p>940 each.</p><p>Votes: <strong id="votesB">3</strong></p><button type="button" class="voteBtn" data-opt="B">Vote for Option B</button></div>
+<div class="opt" id="optC"><h3>Option C: Porto, city hotel, June 12 to 19</h3><p>760 each.</p><p>Votes: <strong id="votesC">2</strong></p><button type="button" class="voteBtn" data-opt="C">Vote for Option C</button></div>
 <p id="voteMsg" class="muted"></p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(5)">Continue to confirm</button><span class="muted">Vote first, watch the count move, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(5)">Continue to confirm</button></div>
 </div>
 </section>
 
@@ -185,11 +240,11 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>Who is <em class="accent">actually ready</em>, before anyone spends</h2>
 <div class="card">
 <p class="muted">Green means confirmed. Amber means still has something to sort out. No one is marked confirmed until they confirm.</p>
-<div class="row"><div><strong>Sample Member A, you</strong><br><span class="muted">Flight, hotel, visa: all in</span></div><span class="pill ok">Confirmed</span></div>
-<div class="row"><div><strong>Sample Member B</strong><br><span class="muted">Flight in, hotel pending</span></div><span id="pillB" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="B">Confirm Member B</button></div>
-<div class="row"><div><strong>Sample Member C</strong><br><span class="muted">Flight pending, visa pending</span></div><span id="pillC" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="C">Confirm Member C</button></div>
+<div class="row"><div><strong>Adaeze Okafor, you</strong><br></div><span class="pill ok">Confirmed</span></div>
+<div class="row"><div><strong>Marcus Bennett</strong><br></div><span id="pillB" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="B">Confirm Marcus Bennett</button></div>
+<div class="row"><div><strong>Simone Whitfield</strong><br></div><span id="pillC" class="pill pending">Pending</span> <button type="button" class="confirmBtn primary" data-who="C">Confirm Simone Whitfield</button></div>
 <p id="confirmMsg" class="muted"></p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(6)">Continue to expense split</button><span class="muted">Confirm a member first, watch amber turn green, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(6)">Continue to expense split</button></div>
 </div>
 </section>
 
@@ -198,11 +253,11 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>Split costs, <em class="accent">line by line</em></h2>
 <div class="card">
 <p class="muted">Expense tracking only. No money moves through TripCircle. The person who owes gets the reminder, so you do not have to chase.</p>
-<div class="row"><div><strong>Beach house, sample</strong><br><span class="muted">Split 3 ways, sample amounts only</span></div><span id="remA">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="A">Send reminder to Member B</button></div>
-<div class="row"><div><strong>Group dinner, sample</strong><br><span class="muted">Split 3 ways, sample amounts only</span></div><span id="remB">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="B">Send reminder to Member C</button></div>
-<div class="row"><div><strong>Airport rides, sample</strong><br><span class="muted">Paid by Member A, sample, owed back in the split</span></div><span class="pill ok">Tracked, not paid in app</span></div>
+<div class="row"><div><strong>Beach house, sample</strong><br></div><span id="remA">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="A">Send reminder to Marcus Bennett</button></div>
+<div class="row"><div><strong>Group dinner, sample</strong><br></div><span id="remB">Not reminded yet</span> <button type="button" class="remBtn primary" data-rem="B">Send reminder to Simone Whitfield</button></div>
+<div class="row"><div><strong>Airport rides, sample</strong><br></div><span class="pill ok">Tracked, not paid in app</span></div>
 <p id="remMsg" class="muted"></p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(7)">Continue to wallet check-in</button><span class="muted">Send a reminder first, watch the state change, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(7)">Continue to wallet check-in</button></div>
 </div>
 </section>
 <!-- 7 WALLET CHECK-IN -->
@@ -211,11 +266,11 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <div class="card">
 <h3>Sample trip: Lisbon with your crew</h3>
 <p class="muted">Manual check-in only. This is not an airline or hotel confirmation.</p>
-<div class="row"><div><strong>Flight, sample</strong><br><span class="muted">Sample Air, SA 101, sample cities</span><br><span class="pill">Boarding pass on file</span> <span class="pill ok" id="flightPill">Flight: not checked in</span></div><button type="button" class="checkBtn primary" data-label="Flight">Mark flight checked in</button></div>
-<div class="row"><div><strong>Hotel, sample</strong><br><span class="muted">Sample Hotel, June 12 to 19</span><br><span class="pill ok" id="hotelPill">Hotel: not checked in</span></div><button type="button" class="checkBtn" data-label="Hotel">Mark hotel checked in</button></div>
-<div class="row"><div><strong>Visa, sample</strong><br><span class="muted">Sample Country, e-visa, single entry</span><br><span class="pill ok">Visa: approved, manual</span></div><button type="button">View approval file, sample</button></div>
+<div class="row"><div><strong>Flight, sample</strong><br><br><span class="pill">Boarding pass on file</span> <span class="pill ok" id="flightPill">Flight: not checked in</span></div><button type="button" class="checkBtn primary" data-label="Flight">Mark flight checked in</button></div>
+<div class="row"><div><strong>Hotel, sample</strong><br><br><span class="pill ok" id="hotelPill">Hotel: not checked in</span></div><button type="button" class="checkBtn" data-label="Hotel">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Visa, sample</strong><br><br><span class="pill ok">Visa: approved, manual</span></div><button type="button">View approval file, sample</button></div>
 <p class="checkMsg muted"></p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(8)">Continue to party view</button><span class="muted">Mark flight checked in first, watch the pill change, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(8)">Continue to party view</button></div>
 <div style="border:1px solid var(--line);border-radius:16px;padding:16px;text-align:center"><p class="muted">Sample pass only, not a real boarding pass</p><h3>SA 101</h3><p>Sample City A to Sample City B, Seat: sample, 12A</p><p class="muted">Made to open fast with no signal, in the ported app.</p></div>
 </div>
 </section>
@@ -224,15 +279,15 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <section class="screen" id="s8">
 <h2>Party view, <em class="accent">one row per person</em></h2>
 <div class="card">
-<button type="button" id="demoAllChecked">Demo: mark all sample members checked in</button>
+<button type="button" id="demoAllChecked">Demo: mark all members checked in</button>
 <label class="switch" style="margin-left:12px"><input type="checkbox" id="uncheckedOnly"> Show unchecked only</label>
 <label class="switch" style="margin-left:12px"><input type="checkbox" id="visaOnly"> Show visas not approved yet</label>
 <div id="allChecked" class="banner hidden" style="margin-top:14px"><strong>All checked in.</strong> Every party member is marked checked in for this flight, manual labels only.</div>
-<div class="row partyRow" data-checked="yes" data-visa="approved"><div><strong>Sample Member A, you</strong><br><span class="muted">Flight: sample, checked in. Hotel: sample. Visa: approved.</span><br><span class="pill">Pass on file</span></div><span class="pill ok">Checked in, manual</span></div>
-<div class="row partyRow" data-checked="no" data-visa="approved"><div><strong>Sample Member B</strong><br><span class="muted">Flight: sample, not checked in. Hotel: sample. Visa: approved.</span><br><span class="pill">Pass on file</span></div><span class="pill warn">Not checked in</span></div>
-<div class="row partyRow" data-checked="no" data-visa="pending"><div><strong>Sample Member C</strong><br><span class="muted">Flight: sample, not checked in. Hotel: sample. Visa: not approved yet.</span><br><span class="pill">Pass presence only</span></div><span class="pill warn">Not checked in</span></div>
+<div class="row partyRow" data-checked="yes" data-visa="approved"><div><strong>Adaeze Okafor, you</strong><br><br><span class="pill">Pass on file</span></div><span class="pill ok">Checked in, manual</span></div>
+<div class="row partyRow" data-checked="no" data-visa="approved"><div><strong>Marcus Bennett</strong><br><br><span class="pill">Pass on file</span></div><span class="pill warn">Not checked in</span></div>
+<div class="row partyRow" data-checked="no" data-visa="pending"><div><strong>Simone Whitfield</strong><br><br><span class="pill">Pass presence only</span></div><span class="pill warn">Not checked in</span></div>
 <p class="muted">Summary only sharing is on for this sample trip, so booking refs are hidden in this view.</p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(9)">Continue to organization dashboard</button><span class="muted">Tick Show unchecked only or mark all checked in first, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(9)">Continue to organization dashboard</button></div>
 </div>
 </section>
 
@@ -252,8 +307,8 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <p>18 of 22 items done</p>
 <div class="bar"><div class="fill" style="width:82%"></div></div>
 <h3 style="margin-top:14px">Upcoming deadlines</h3>
-<div class="row"><div>Permission slips due, youth trip</div><span class="muted">Mar 1, 2026</span></div>
-<div class="row"><div>Trip day, youth trip</div><span class="muted">Mar 14, 2026</span></div>
+<div class="row"><div>Permission slips due, youth trip</div></div>
+<div class="row"><div>Trip day, youth trip</div></div>
 </div>
 <div class="orgtrip hidden" id="orgTripAdult">
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between"><h3>Golf Comp Trip</h3><span class="pill">Adult trip</span></div>
@@ -261,9 +316,9 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <p>12 of 16 checked in</p>
 <div class="bar"><div class="fill" style="width:75%"></div></div>
 <h3 style="margin-top:14px">Upcoming deadlines</h3>
-<div class="row"><div>Trip day, adult trip</div><span class="muted">Apr 10, 2026</span></div>
+<div class="row"><div>Trip day, adult trip</div></div>
 </div>
-<p class="muted">Live screen, sample data only. Tap a tab to switch the trip list.</p>
+<p class="muted">Tap a tab to switch the trip list.</p>
 <button type="button" class="primary" onclick="go(10)">Open roster</button>
 </div>
 </section>
@@ -272,13 +327,13 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <section class="screen" id="s10">
 <h2>Roster and <em class="accent">eligibility</em>, in one place</h2>
 <div class="card">
-<p class="muted">Spring Tournament Trip, Example Club. One roster, live eligibility, no spreadsheet. Sample data only.</p>
+<p class="muted">Spring Tournament Trip, Example Club. One roster, live eligibility, no spreadsheet..</p>
 <table class="orgtable">
 <tr><th>Member</th><th>Role</th><th>Form ticked</th><th>Forms</th></tr>
-<tr><td>Sample Member A</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Sample Member A form in"></label></td><td><span class="pill ok" id="eligPill0">Complete</span></td></tr>
-<tr><td>Sample Member B</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Sample Member B form in"></label></td><td><span class="pill warn" id="eligPill1">Forms pending</span></td></tr>
-<tr><td>Sample Member C</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Sample Member C form in"></label></td><td><span class="pill warn" id="eligPill2">Forms pending</span></td></tr>
-<tr><td>Sample Member D</td><td>Coach</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Sample Member D form in"></label></td><td><span class="pill ok" id="eligPill3">Complete</span></td></tr>
+<tr><td>Adaeze Okafor</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Adaeze Okafor form in"></label></td><td><span class="pill ok" id="eligPill0">Complete</span></td></tr>
+<tr><td>Marcus Bennett</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Marcus Bennett form in"></label></td><td><span class="pill warn" id="eligPill1">Forms pending</span></td></tr>
+<tr><td>Simone Whitfield</td><td>Player</td><td><label class="switch"><input type="checkbox" class="elig" aria-label="Simone Whitfield form in"></label></td><td><span class="pill warn" id="eligPill2">Forms pending</span></td></tr>
+<tr><td>Andre Coleman</td><td>Coach</td><td><label class="switch"><input type="checkbox" class="elig" checked aria-label="Andre Coleman form in"></label></td><td><span class="pill ok" id="eligPill3">Complete</span></td></tr>
 </table>
 <p><strong id="eligMsg">2 members still missing something.</strong></p>
 <p class="muted">Tick a box in the table and that member moves to Complete, and the missing count drops. A member with a missing form shows up here before trip day, so nothing is a surprise at check-in.</p>
@@ -291,24 +346,24 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>Document checklist <em class="accent">gates check-in</em></h2>
 <div class="card">
 <h3>Travel Wallet, one row per person</h3>
-<p class="muted">Spring Tournament Trip, Example Club. Check-in here is manual only, and visa status is as provided by the org or family. Sample data only.</p>
-<div class="row"><div><strong>Sample Member A</strong><br><span class="muted">Flight checked in. Hotel checked in. Visa: Canada, Approved. Boarding pass on file.</span></div><span class="pill ok">Checked in</span></div>
-<div class="row"><div><strong>Sample Member B</strong><br><span class="muted">Flight not checked in. Hotel not checked in. Visa: Canada, Applied. No boarding pass uploaded yet.</span></div><span class="pill warn">Not checked in</span></div>
-<div class="row"><div><strong>Sample Member C</strong><br><span class="muted">Flight: no flight saved yet. Hotel: no hotel saved yet. Visa: no visa record yet.</span></div><span class="pill warn">Not cleared</span></div>
-<div class="detail"><strong>Not cleared, Sample Member C:</strong><br>Permission slip: missing<br>Medical form: missing</div>
-<h3 style="margin-top:18px">Gate for Sample Member B</h3>
+<p class="muted">Spring Tournament Trip, Example Club. Check-in here is manual only, and visa status is as provided by the org or family..</p>
+<div class="row"><div><strong>Adaeze Okafor</strong><br></div><span class="pill ok">Checked in</span></div>
+<div class="row"><div><strong>Marcus Bennett</strong><br></div><span class="pill warn">Not checked in</span></div>
+<div class="row"><div><strong>Simone Whitfield</strong><br></div><span class="pill warn">Not cleared</span></div>
+<div class="detail"><strong>Not cleared, Simone Whitfield:</strong><br>Permission slip: missing<br>Medical form: missing</div>
+<h3 style="margin-top:18px">Gate for Marcus Bennett</h3>
 <p class="muted">Check-in stays locked until every required item is ticked.</p>
 <label class="switch"><input type="checkbox" class="gate"> Permission slip, required</label><br>
 <label class="switch"><input type="checkbox" class="gate"> Trip form, required</label><br>
 <label class="switch"><input type="checkbox" class="gate"> Fee tracked, required</label>
 <p id="gateMsg"><strong>Check-in locked:</strong> 3 required items still unchecked.</p>
 <button type="button" id="gateBtn" class="primary" disabled>Check in, locked until all required items are ticked</button>
-<h3 style="margin-top:18px">Sample Member B, detail</h3>
-<div class="row"><div><strong>Flights</strong><br><span class="muted">Sample Air, Mar 14, 2026, sample cities. Manual check-in only.</span><br><span class="pill ok" id="orgFlightPill">Flight: not checked in</span></div><button type="button" class="primary" id="orgFlightBtn">Mark flight checked in</button></div>
-<div class="row"><div><strong>Hotel stays</strong><br><span class="muted">Sample Hotel, Mar 14 to 16, 2026. Manual check-in only.</span><br><span class="pill ok" id="orgHotelPill">Hotel: not checked in</span></div><button type="button" class="primary" id="orgHotelBtn">Mark hotel checked in</button></div>
-<div class="row"><div><strong>Visa records</strong><br><span class="muted">Canada, E-visa, Applied, marked as required by the org. Visa status as provided by the org or family.</span></div><span class="pill warn">Visa: applied</span></div>
+<h3 style="margin-top:18px">Marcus Bennett, detail</h3>
+<div class="row"><div><strong>Flights</strong><br><br><span class="pill ok" id="orgFlightPill">Flight: not checked in</span></div><button type="button" class="primary" id="orgFlightBtn">Mark flight checked in</button></div>
+<div class="row"><div><strong>Hotel stays</strong><br><br><span class="pill ok" id="orgHotelPill">Hotel: not checked in</span></div><button type="button" class="primary" id="orgHotelBtn">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Visa records</strong><br></div><span class="pill warn">Visa: applied</span></div>
 <p class="muted">No booking refs are shown in this detail view.</p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(12)">Continue to announcement</button><span class="muted">Tick all 3 gate items, tap Check in, mark flight checked in, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(12)">Continue to announcement</button></div>
 </div>
 </section>
 
@@ -317,7 +372,7 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>One announcement, <em class="accent">to everyone</em></h2>
 <div class="card">
 <h3>Trip update</h3>
-<p class="muted">Sent Mar 10, 2026, seen by 20 of 22. Sample data only.</p>
+<p class="muted">Sent Mar 10, 2026, seen by 20 of 22..</p>
 <div class="orgtrip">
 <p><strong>Buses leave at 7:00 AM on Mar 14</strong></p>
 <p>Meet at Example School. Bring your boarding pass and team kit. If you need check-in help, open your Travel Wallet.</p>
@@ -330,8 +385,8 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <label for="annInput">Announcement to the whole organization</label>
 <input id="annInput" type="text" value="Bus leaves at 8am from the school lot, bring your pass and water." aria-label="Announcement text">
 <button type="button" class="primary" id="annSend" style="margin-top:10px">Send announcement</button>
-<div id="annList" style="margin-top:14px"><p class="muted">No announcement sent yet in this demo run.</p></div>
-<div class="flowbar"><button type="button" class="primary" onclick="go(13)">Continue to adult board</button><span class="muted">Send an announcement first, watch the sent card appear, then continue.</span></div>
+<div id="annList" style="margin-top:14px"><p class="muted">No announcement sent yet.</p></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(13)">Continue to adult board</button></div>
 </div>
 </section>
 
@@ -340,12 +395,12 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>Adult team board, <em class="accent">coordination, not oversight</em></h2>
 <div class="card">
 <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:space-between"><h3>Golf Comp Trip, team board</h3><span class="pill">Adult trip</span></div>
-<p class="muted">Example Golf Club. Teammates see the same board. No private details on it. Flight and hotel check-in states only, no files, no visa details, no booking refs. Sample data only.</p>
-<div class="row"><div><strong>Teammate A, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardA">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="A">Mark flight checked in</button></div>
-<div class="row"><div><strong>Teammate B, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardB">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="B">Mark hotel checked in</button></div>
-<div class="row"><div><strong>Teammate C, sample</strong><br><span class="muted">Flight and hotel states only</span></div><span id="boardC">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="C">Mark flight checked in</button></div>
+<p class="muted">Example Golf Club. Teammates see the same board. No private details on it. Flight and hotel check-in states only, no files, no visa details, no booking refs..</p>
+<div class="row"><div><strong>Folake Adeyemi</strong><br></div><span id="boardA">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="A">Mark flight checked in</button></div>
+<div class="row"><div><strong>Andre Coleman</strong><br></div><span id="boardB">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="B">Mark hotel checked in</button></div>
+<div class="row"><div><strong>Darnell Hughes</strong><br></div><span id="boardC">Flight: not checked in, Hotel: not checked in</span> <button type="button" class="boardBtn primary" data-board="C">Mark flight checked in</button></div>
 <p class="muted">Coordination, not oversight. No confirmation refs, no files, no visa details on this board.</p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(14)">Continue to trip day</button><span class="muted">Mark a flight or hotel checked in first, watch the state change, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(14)">Continue to trip day</button></div>
 </div>
 </section>
 
@@ -354,7 +409,7 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>Trip day, <em class="accent">everyone knows where to be</em></h2>
 <div class="card">
 <h3>Trip day, all in one place</h3>
-<p class="muted">Spring Tournament Trip, Example Club. Sample data only.</p>
+<p class="muted">Spring Tournament Trip, Example Club..</p>
 <p><strong>18 of 22 checked in</strong></p>
 <div class="bar"><div class="fill" style="width:82%"></div></div>
 <div class="statgrid">
@@ -373,7 +428,7 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <div id="detail-game" class="detail hidden">Meet at the field gate, group photo after the game, sample only.</div>
 <button type="button" class="stopBtn" data-stop="home" style="margin-top:8px">6pm: Bus home</button>
 <div id="detail-home" class="detail hidden">Bus leaves from the field lot, parents meet at the school lot, sample only.</div>
-<div class="flowbar"><button type="button" class="primary" onclick="go(15)">Continue to close</button><span class="muted">Tap a stop first, watch its detail open under that stop, then continue.</span></div>
+<div class="flowbar"><button type="button" class="primary" onclick="go(15)">Continue to close</button></div>
 </div>
 </section>
 
@@ -382,22 +437,34 @@ table.orgtable td{padding:12px 8px;border-bottom:1px solid var(--line);vertical-
 <h2>From we should go, <em class="accent">to everyone showing up</em></h2>
 <div class="card">
 <p style="font-size:20px">This is TripCircle, the missing piece that gets a group trip from we should go, to everyone showing up.</p>
-<p><strong>MVP demo only. Sample data only, not a live app.</strong> Join the founding waitlist at tripcircle.us/beta and claim your founding spot.</p>
-<div class="flowbar"><button type="button" class="primary" onclick="go(0)">Claim Your Founding Spot at tripcircle.us/beta</button><span class="muted">Held result. Move the cursor away and hold this screen.</span></div>
+<p>The trip is ready, and everyone is confirmed.</p>
+<div class="flowbar"></div>
 <img class="genimg" src="assets/JG_fresh_fullform.png" alt="JourneyGenie, full form, static image">
-<p class="muted">JourneyGenie here is a static image on the close screen, so the close screen shows one JourneyGenie only, not two at once with the Rive canvas.</p>
-<button type="button" onclick="go(0)">Replay from the landing page</button>
+<button type="button" onclick="go(0)">Replay</button>
 </div>
 </section>
 
-<p class="footer muted">Interactive demo prototype only. No live data, no real bookings, no app tree changes, no push, no live deploy. JourneyGenie Rive files are local copies of the verified file. Popcorn, Social, and Clean Rive runtime shots are deliberately not used, because their Chromium runtime captures showed a black bar. Their original whole images are used as static images only.</p>
 </main>
+
+<div class="slidebackdrop" id="slideBackdrop"></div>
+<aside class="slideout" id="slidePanel" aria-label="JourneyGenie conversation">
+<div style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+<h2>JourneyGenie</h2>
+<button type="button" id="slideCloseBtn">Close</button>
+</div>
+<p class="muted">Free-form chat only. Type your trip in your own words, JourneyGenie types back slowly.</p>
+<div class="chat" id="slideChatBox"><div class="msg genie">Hi, I am JourneyGenie. Tell me the trip, and I will check the plan before anyone sees it as true.</div></div>
+<input id="slideChatInput" type="text" placeholder="Type your trip in your own words" style="margin-top:10px" aria-label="Message to JourneyGenie in the slide-out">
+<button type="button" class="primary" id="slideChatSend" style="margin-top:10px">Send</button>
+<div class="flowbar"><button type="button" class="primary" id="enterAppFromSlideBtn">Enter the app with this trip</button></div>
+
+</aside>
 <script>
 var steps=[
-{label:"Step 0: Landing",hint:"Tap Claim Your Founding Spot to enter the demo app."},
+{label:"Step 0: Post-launch landing",hint:"Tap the JourneyGenie box to open the slide-out conversation on the right."},
 {label:"Step 1 of 15: Wrong airport hook",hint:"Read the hook, then tap Next."},
 {label:"Step 2 of 15: Moodboard",hint:"Type a trip idea, copy the share link, tap Send one link."},
-{label:"Step 3 of 15: JourneyGenie chat",hint:"Tap Ask about dates, budgets, preferences. Watch JourneyGenie type slowly. Tap Celebrate."},
+{label:"Step 3 of 15: JourneyGenie chat",hint:"Type your own prompt. Watch JourneyGenie type back slowly."},
 {label:"Step 4 of 15: Vote",hint:"Tap Vote on an option card, watch the vote count move."},
 {label:"Step 5 of 15: Confirm",hint:"Tap Confirm on a pending member, watch amber turn green."},
 {label:"Step 6 of 15: Expense split",hint:"Tap Send reminder, watch the reminder state change."},
@@ -409,7 +476,7 @@ var steps=[
 {label:"Step 12 of 15: Announcement",hint:"Edit the announcement text, tap Send announcement."},
 {label:"Step 13 of 15: Adult board",hint:"Tap Mark flight or hotel checked in, states only, no refs."},
 {label:"Step 14 of 15: Trip day payoff",hint:"Tap a stop, its detail opens right under that stop."},
-{label:"Step 15 of 15: Close MVP",hint:"Read the MVP close, then Replay from the hook if needed."}
+{label:"Step 15 of 15: Close",hint:"Read the close, then replay if needed."}
 ];
 var current=0;
 var jumpNav=document.getElementById('jumpNav');
@@ -420,6 +487,7 @@ function go(n){
 current=Math.max(0,Math.min(15,n));
 document.querySelectorAll('.screen').forEach(function(el){el.classList.remove('active')});
 document.getElementById('s'+current).classList.add('active');
+var _hdr=document.querySelector('header.top'); if(_hdr) _hdr.style.display=(current===0?'none':'');
 document.getElementById('stepLabel').textContent=steps[current].label;
 document.getElementById('stepHint').textContent=steps[current].hint;
 for(var i=0;i<=15;i++){var j=document.getElementById('jump'+i);if(j)j.classList.toggle('now',i===current)}
@@ -440,7 +508,7 @@ try{navigator.clipboard.writeText(link);}catch(e){}
 document.getElementById('shareMsg').textContent='Share link copied: '+link;
 };
 document.getElementById('joinBtn').onclick=function(){
-var names=['Sample Member A, you','Sample Member B','Sample Member C'];
+var names=['Adaeze Okafor, you','Marcus Bennett','Simone Whitfield'];
 var list=document.getElementById('joinedList');list.innerHTML='';
 names.forEach(function(n,i){setTimeout(function(){var p=document.createElement('p');p.innerHTML='<span class="pill ok">Joined</span> '+n;list.appendChild(p);},i*600)});
 };
@@ -448,16 +516,10 @@ function typeMsg(text,cls){
 var box=document.getElementById('chatBox');var d=document.createElement('div');d.className='msg '+cls;d.textContent='';box.appendChild(d);
 var i=0;var t=setInterval(function(){d.textContent=text.slice(0,++i);box.scrollTop=box.scrollHeight;if(i>=text.length)clearInterval(t)},18);
 }
-var asks={
-dates:'JourneyGenie: When are you thinking? June 12 to 19 works for the sample group, and I checked that plan against the place, the dates, the cost, and the people going, before showing it.',
-budget:'JourneyGenie: What budget feels right? The sample options are 760 to 940 each, and the group can vote in the trip, not in a side chat.',
-prefs:'JourneyGenie: Beach days, one big group dinner, and no early flights? Got it. I will build options around that, and show who is actually ready, before anyone spends.'
-};
-document.querySelectorAll('.chatAsk').forEach(function(b){b.onclick=function(){typeMsg(asks[b.dataset.ask],'genie')}});
 document.getElementById('chatSend').onclick=function(){
 var v=document.getElementById('chatInput').value.trim();if(!v)return;
 typeMsg(v,'user');document.getElementById('chatInput').value='';
-setTimeout(function(){typeMsg('JourneyGenie: Noted. I checked that against the sample plan, and I will show it in the vote step next.','genie')},900);
+setTimeout(function(){typeMsg('JourneyGenie: Got it. June 12 to 19, about 800 each, beach days and one big group dinner, no early flights. I checked that against the place, the dates, the cost, and the people going, before showing options you can vote on next.','genie')},900);
 };
 document.querySelectorAll('.voteBtn').forEach(function(b){b.onclick=function(){
 var opt=b.dataset.opt;var el=document.getElementById('votes'+opt);el.textContent=parseInt(el.textContent,10)+1;
@@ -468,7 +530,7 @@ document.getElementById('voteMsg').textContent='Your vote moved Option '+opt+' u
 document.querySelectorAll('.confirmBtn').forEach(function(b){b.onclick=function(){
 var who=b.dataset.who;var pill=document.getElementById('pill'+who);
 pill.textContent='Confirmed';pill.className='pill ok';b.disabled=true;b.textContent='Confirmed';
-document.getElementById('confirmMsg').textContent='Member '+who+' is now confirmed, green. No one spends until the group can see who is actually ready.';
+var confirmNames={B:'Marcus Bennett',C:'Simone Whitfield'};document.getElementById('confirmMsg').textContent=(confirmNames[who]||who)+' is now confirmed, green. No one spends until the group can see who is actually ready.';
 }});
 document.querySelectorAll('.remBtn').forEach(function(b){b.onclick=function(){
 var k=b.dataset.rem;document.getElementById('rem'+k).textContent='Reminder sent, sample only';
@@ -540,6 +602,25 @@ b.disabled=true;
 document.querySelectorAll('.stopBtn').forEach(function(b){b.onclick=function(){
 var d=document.getElementById('detail-'+b.dataset.stop);d.classList.toggle('hidden');
 }});
+// Slide-out JourneyGenie, post-launch landing: talk box opens a right panel, free-form only
+function openSlide(){document.getElementById('slidePanel').classList.add('open');document.getElementById('slideBackdrop').classList.add('open');}
+function closeSlide(){document.getElementById('slidePanel').classList.remove('open');document.getElementById('slideBackdrop').classList.remove('open');}
+document.getElementById('talkBtn').onclick=openSlide;
+var _hgs=document.getElementById('headerGetStartedBtn'); if(_hgs) _hgs.onclick=openSlide;
+document.getElementById('talkInput').addEventListener('focus',openSlide);
+document.getElementById('talkInput').addEventListener('click',openSlide);
+document.getElementById('slideCloseBtn').onclick=closeSlide;
+document.getElementById('slideBackdrop').onclick=closeSlide;
+function typeSlideMsg(text,cls){
+var box=document.getElementById('slideChatBox');var d=document.createElement('div');d.className='msg '+cls;d.textContent='';box.appendChild(d);
+var i=0;var t=setInterval(function(){d.textContent=text.slice(0,++i);box.scrollTop=box.scrollHeight;if(i>=text.length)clearInterval(t)},18);
+}
+document.getElementById('slideChatSend').onclick=function(){
+var v=document.getElementById('slideChatInput').value.trim();if(!v)return;
+typeSlideMsg(v,'user');document.getElementById('slideChatInput').value='';
+setTimeout(function(){typeSlideMsg('JourneyGenie: Got it. June 12 to 19, about 800 each, beach days and one big group dinner, no early flights. I checked that against the place, the dates, the cost, and the people going, before showing options you can vote on next.','genie')},900);
+};
+document.getElementById('enterAppFromSlideBtn').onclick=function(){closeSlide();go(1);};
 // Rive, FullForm Idle and Celebrating, plus LampWorld Meal, one canvas only
 var riveObj=null,currentArt='JourneyGenieFullForm';
 function loadRive(art){
@@ -560,6 +641,12 @@ document.getElementById('mealBtn').onclick=function(){currentArt='LampWorld Meal
 document.getElementById('fullformBtn').onclick=function(){currentArt='JourneyGenieFullForm';loadRive(currentArt);};
 if(window.rive){loadRive(currentArt);}else{document.getElementById('riveStatus').textContent='Rive script did not load from a file path, showing the static image instead. Serve this folder over http for live Rive.';document.getElementById('riveFallback').classList.remove('hidden');}
 go(0);
+
+document.getElementById('navTryBtn').onclick=function(){openSlide()};
+document.getElementById('heroTryBtn').onclick=function(){openSlide()};
+document.getElementById('navClaimBtn').onclick=function(){openSlide()};
+document.getElementById('heroClaimBtn').onclick=function(){openSlide()};
+document.getElementById('landingEnterBtn').onclick=function(){go(1)};
 </script>
 </body>
 </html>
